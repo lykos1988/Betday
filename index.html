@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betday - Προγνωστικά</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  margin: 0;
+}
+.container { max-width: 800px; width: 100%; }
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+h1,h2 { margin-bottom: 10px; }
+#todayDate { margin-bottom: 20px; font-size: 1rem; color: #ffd700; }
+.prediction {
+  font-size: 1.4rem;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.4);
+  filter: blur(6px);
+  transition: filter 0.4s ease;
+}
+.prediction.visible { filter: blur(0); }
+#paypal-button-container { margin-top: 20px; }
+.note { font-size: 0.9rem; margin-top: 15px; color: #ddd; }
+.terms { margin-top: 15px; font-size: 0.9rem; text-align: left; }
+.terms label { cursor: pointer; }
+.terms a { color: #ffd700; text-decoration: underline; cursor: pointer; }
+
+/* Modal */
+.modal { display: none; position: fixed; z-index: 999; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center;}
+.modal-content { background: #1e2a35; padding: 25px; border-radius: 12px; max-width: 600px; width: 90%; box-shadow: 0 8px 20px rgba(0,0,0,0.6); color: #f5f5f5; text-align: left;}
+.modal-content h2 { margin-top:0; margin-bottom:10px; }
+.modal-content ul { margin-left:1.2rem; }
+.close { float:right; font-size:1.5rem; cursor:pointer; color:#fff;}
+.close:hover { color:#ff4444; }
+
+/* Ιστορικό πίνακας */
+table { width:100%; border-collapse: collapse; margin-top:20px; background: rgba(255,255,255,0.1); border-radius:8px; overflow:hidden;}
+th, td { padding:12px; text-align:center; }
+th { background: rgba(255,255,255,0.15); }
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+.success { color:#00ff88; font-weight:bold; }
+.failure { color:#ff5555; font-weight:bold; }
+
+/* Drop-down κουμπί */
+#toggleHistory {
+  display:block;
+  margin: 0 auto 10px auto;
+  background: #ffd700;
+  color: #000;
+  border:none;
+  padding:10px 20px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+/* Κρύψιμο ιστορικού */
+.hidden { display: none; }
+
+/* Logo */
+.logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.logo svg {
+  width: 200px;
+  height: auto;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Λογότυπο -->
+<div class="logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80">
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+    font-family="Verdana, Geneva, sans-serif" font-size="48"
+    fill="url(#grad)" style="letter-spacing:3px; font-weight:bold;">
+    Betday
+  </text>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff8800;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
+</div>
+
+<div class="card">
+<h1>Σήμερα το προγνωστικό</h1>
+<p id="todayDate"></p>
+
+<div id="prediction" class="prediction">
+⚽ Αγώνας: ΑΕΚ - Άρης <br>
+Πρόβλεψη: 1 & Over 1.5 <br>
+Απόδοση: 2.10
+</div>
+
+<div class="terms">
+<input type="checkbox" id="agreeTerms">
+<label for="agreeTerms">Συμφωνώ με τους <a id="openModal">όρους επιστροφής</a></label>
+</div>
+
+<div id="paypal-button-container"></div>
+<p class="note">Το προγνωστικό ξεκλειδώνει με 1€.</p>
+</div>
+
+<div class="card">
+<button type="button" id="toggleHistory">Δες το ιστορικό</button>
+
+<div id="historyContainer" class="hidden">
+<h2>Ιστορικό Προγνωστικών</h2>
+<table>
+<thead>
+<tr>
+<th>Ημερομηνία</th>
+<th>Προγνωστικό</th>
+<th>Αποτέλεσμα</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10/09/2025</td>
+<td>Ολυμπιακός - ΠΑΟΚ | Over 2.5 Goals</td>
+<td class="success">✅ Επιτυχία</td>
+</tr>
+<tr>
+<td>09/09/2025</td>
+<td>ΑΕΚ - Άρης | 1 & Over 1.5</td>
+<td class="failure">❌ Αποτυχία</td>
+</tr>
+<tr>
+<td>08/09/2025</td>
+<td>ΠΑΟ - ΟΦΗ | X | Απόδοση 3.20</td>
+<td class="success">✅ Επιτυχία</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="termsModal" class="modal">
+<div class="modal-content">
+<span class="close" id="closeModal">&times;</span>
+<h2>Πολιτική Επιστροφής Χρήματος</h2>
+<p>
+Αν το προγνωστικό που αγοράσατε δεν πιάσει, το ποσό της αγοράς
+επιστρέφεται μέσω PayPal, σύμφωνα με τους παρακάτω όρους:
+</p>
+<ul>
+<li>Η αίτηση επιστροφής πρέπει να γίνει εντός <strong>3 ημερών</strong> από τη λήξη του αγώνα.</li>
+<li>Απαιτείται PayPal transaction ID και το email που χρησιμοποιήθηκε για την αγορά.</li>
+<li>Η επιστροφή γίνεται μόνο στον ίδιο λογαριασμό PayPal.</li>
+<li>Διατηρούμε δικαίωμα επαλήθευσης για αποφυγή καταχρήσεων.</li>
+<li>Η επιστροφή αφορά μόνο το κόστος του προγνωστικού, όχι στοιχηματικές ζημιές.</li>
+</ul>
+<p>Για επιστροφές: <a href="mailto:phonegenius@gmail.com">phonegenius88@gmail.com</a></p>
+</div>
+</div>
+
+<!-- PayPal SDK με το Client ID σου -->
+<script src="https://www.paypal.com/sdk/js?client-id=AbDmVPMQigJpPGegDWpPvchgztPArB-1LtA-UprDDJt1ldg4O70rqMrm1gcOiiPLEdOlPJny8YZpV-kT&currency=EUR"></script>
+
+<script>
+// Αυτόματη ημερομηνία
+const today = new Date();
+const options = { day:'2-digit', month:'2-digit', year:'numeric'};
+document.getElementById("todayDate").textContent = "Προγνωστικό για " + today.toLocaleDateString("el-GR", options);
+
+// Modal
+const modal = document.getElementById("termsModal");
+document.getElementById("openModal").addEventListener('click',()=>{ modal.style.display='flex';});
+document.getElementById("closeModal").addEventListener('click',()=>{ modal.style.display='none';});
+window.addEventListener('click',(e)=>{ if(e.target===modal) modal.style.display='none';});
+
+// PayPal
+paypal.Buttons({
+style:{color:'gold',shape:'pill',label:'pay'},
+onClick:function(data,actions){
+  if(!document.getElementById("agreeTerms").checked){ 
+    alert("Πρέπει να αποδεχτείτε τους όρους επιστροφής πριν συνεχίσετε."); 
+    return actions.reject();
+  }
+  return actions.resolve();
+},
+createOrder:function(data,actions){
+  return actions.order.create({ purchase_units:[{ description:"Προγνωστικό Ποδοσφαίρου", amount:{ currency_code:"EUR", value:"1.00"} }]});
+},
+onApprove:function(data,actions){
+  return actions.order.capture().then(function(details){
+    alert("Ευχαριστούμε " + details.payer.name.given_name + "! Το προγνωστικό ξεκλείδωσε.");
+    document.getElementById("prediction").classList.add("visible");
+  });
+},
+onError:function(err){ console.error(err); alert("Σφάλμα με την πληρωμή. Δοκιμάστε ξανά."); }
+}).render('#paypal-button-container');
+
+// Drop-down ιστορικό
+const toggleBtn = document.getElementById("toggleHistory");
+const historyContainer = document.getElementById("historyContainer");
+toggleBtn.addEventListener('click',()=>{
+  historyContainer.classList.toggle('hidden');
+  toggleBtn.textContent = historyContainer.classList.contains('hidden') ? "Δες το ιστορικό" : "Κρύψε το ιστορικό";
+});
+</script>
+
+</body>
+</html>
