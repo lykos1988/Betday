@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/x-icon" href="https://i.postimg.cc/J4bBX2nm/Screenshot-2025-09-13-10-44-36-464-com-android-chrome-edit.jpg">
-<title>Betday - Προγνωστικά Hμέρας</title>
 <style>
-/* Προστασία από αντιγραφή */
 body {
+  user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
 }
+</style>
 
-/* Υπόλοιπο στυλ */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/J4bBX2nm/Screenshot-2025-09-13-10-44-36-464-com-android-chrome-edit.jpg">
+<title>Betday - Προγνωστικά Hμέρας</title>
+<style>
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
@@ -51,18 +51,24 @@ h1,h2 { margin-bottom: 10px; }
 .terms { margin-top: 15px; font-size: 0.9rem; text-align: left; }
 .terms label { cursor: pointer; }
 .terms a { color: #ffd700; text-decoration: underline; cursor: pointer; }
+
+/* Modal */
 .modal { display: none; position: fixed; z-index: 999; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center;}
 .modal-content { background: #1e2a35; padding: 25px; border-radius: 12px; max-width: 600px; width: 90%; box-shadow: 0 8px 20px rgba(0,0,0,0.6); color: #f5f5f5; text-align: left;}
 .modal-content h2 { margin-top:0; margin-bottom:10px; }
 .modal-content ul { margin-left:1.2rem; }
 .close { float:right; font-size:1.5rem; cursor:pointer; color:#fff;}
 .close:hover { color:#ff4444; }
+
+/* Ιστορικό πίνακας */
 table { width:100%; border-collapse: collapse; margin-top:20px; background: rgba(255,255,255,0.1); border-radius:8px; overflow:hidden;}
 th, td { padding:12px; text-align:center; }
 th { background: rgba(255,255,255,0.15); }
 tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
 .success { color:#00ff88; font-weight:bold; }
 .failure { color:#ff5555; font-weight:bold; }
+
+/* Drop-down κουμπί */
 #toggleHistory {
   display:block;
   margin: 0 auto 10px auto;
@@ -74,7 +80,11 @@ tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
   cursor:pointer;
   font-weight:bold;
 }
+
+/* Κρύψιμο ιστορικού */
 .hidden { display: none; }
+
+/* Logo */
 .logo {
   text-align: center;
   margin-bottom: 30px;
@@ -83,13 +93,145 @@ tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
   width: 200px;
   height: auto;
 }
+
+.prediction.visible {
+  filter: blur(0);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 600px) {
+  .prediction {
+    font-size: 1.1rem;
+  }
+  h1 {
+    font-size: 1.4rem;
+  }
+}
+
+body {
+  -webkit-user-select: none; /* Chrome/Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+ */
+  user-select: none;         /* Standard */
+}
+
+a[href^="mailto"] {
+  user-select: text !important;
+}
+
 </style>
 </head>
 <body>
 <div class="container">
-<!-- ... Ο υπόλοιπος HTML κώδικας είναι ίδιος (δεν χρειάζεται αλλαγή εδώ) ... -->
 
-<!-- PayPal SDK -->
+<!-- Λογότυπο -->
+<div class="logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80">
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+    font-family="Verdana, Geneva, sans-serif" font-size="48"
+    fill="url(#grad)" style="letter-spacing:3px; font-weight:bold;">
+    Betday
+  </text>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff8800;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
+</div>
+
+<div class="card">
+<h1>Σήμερα το προγνωστικό</h1>
+<p id="todayDate"></p>
+
+<div id="prediction" class="prediction">
+⚽ Αγώνας: Εσπανιόλ - Μαγιορκα<br>
+Πρόβλεψη: GG or Over 2,5 Goals  <br>
+Απόδοση: 1,72
+</div>
+
+<div class="terms">
+<input type="checkbox" id="agreeTerms">
+<label for="agreeTerms">Συμφωνώ με τους <a id="openModal">όρους επιστροφής</a></label>
+</div>
+
+<div id="paypal-button-container"></div>
+<p class="note">Το προγνωστικό ξεκλειδώνει με 1€.</p>
+</div>
+
+<div class="card">
+<button type="button" id="toggleHistory">Δες το ιστορικό</button>
+
+<div id="historyContainer" class="hidden">
+<h2>Ιστορικό Προγνωστικών</h2>
+<table>
+<thead>
+<tr>
+<th>Ημερομηνία</th>
+<th>Προγνωστικό</th>
+<th>Αποτέλεσμα</th>
+</tr>
+</thead>
+<tbody>
+   <tr>
+<td>14/09/2025</td>
+<td> Οσασούνα - Βαγιεκάνο  | GG & Over 2,5 Goals[2-0]</td>
+<td class="failure">❌ Αποτυχια</td>
+   </tr>
+   <tr>
+<td>13/09/2025</td>
+<td> Ρεάλ Σοσιεδάδ - Ρεαλ Μαδρίτης | GG & Over 1,5 Goals[1-2]</td>
+<td class="success">✅ Επιτυχία</td>
+   </tr>
+  <tr>
+<td>12/09/2025</td>
+<td> Λεβερκούζεν - Άιντραχτ Φρανκφούρτης| GG & Over 2,5 Goals[3-1]</td>
+<td class="success">✅ Επιτυχία</td>
+  </tr>
+<tr>
+<td>10/09/2025</td>
+<td> Ντιναμο Πρενταβατσ - Ντιναμο Ζάγκρεμπ | Over 3,5 Goals[0-6]</td>
+<td class="success">✅ Επιτυχία</td>
+</tr>
+<tr>
+<td>09/09/2025</td>
+<td> Ουγγαρία - Πορτογαλία | GG & Over 2,5 Goals[2-3]</td>
+<td class="success">✅ Επιτυχία</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div id="termsModal" class="modal">
+<div class="modal-content">
+<span class="close" id="closeModal">&times;</span>
+<h2>Πολιτική Επιστροφής Χρήματος</h2>
+<p>
+Αν το προγνωστικό που αγοράσατε δεν πιάσει, το ποσό της αγοράς
+επιστρέφεται μέσω PayPal, σύμφωνα με τους παρακάτω όρους:
+</p>
+<ul>
+<li>Η αίτηση επιστροφής πρέπει να γίνει εντός <strong>3 ημερών</strong> από τη λήξη του αγώνα.</li>
+<li>Απαιτείται PayPal transaction ID και το email που χρησιμοποιήθηκε για την αγορά.</li>
+<li>Η επιστροφή γίνεται μόνο στον ίδιο λογαριασμό PayPal.</li>
+<li>Διατηρούμε δικαίωμα επαλήθευσης για αποφυγή καταχρήσεων.</li>
+<li>Η επιστροφή αφορά μόνο το κόστος του προγνωστικού, όχι στοιχηματικές ζημιές.</li>
+</ul>
+<p>Για επιστροφές: <a href="mailto:phonegenius@gmail.com" id="copyEmail">phonegenius88@gmail.com</a></p>
+
+</div>
+</div>
+
+<!-- PayPal SDK με το Client ID σου -->
 <script src="https://www.paypal.com/sdk/js?client-id=AS2PzBZ5Opq_q2hMrviwU6fmikItQruKf9gPVeTDKTzumn48tqNeCKl99iljBQT0b9VvH2nbbO9bB3p_&currency=EUR"></script>
 <script>
 // Αυτόματη ημερομηνία
@@ -133,16 +275,45 @@ toggleBtn.addEventListener('click',()=>{
   toggleBtn.textContent = historyContainer.classList.contains('hidden') ? "Δες το ιστορικό" : "Κρύψε το ιστορικό";
 });
 
-/* -------------------------------
-   Προστασία από Αντιγραφή / Copy
----------------------------------- */
+document.getElementById("copyEmail").addEventListener("click", (e) => {
+  e.preventDefault();
+  navigator.clipboard.writeText("phonegenius88@gmail.com").then(() => {
+    alert("Το email αντιγράφηκε!");
+    window.location.href = e.target.href;
+  });
+});
 
-// Απενεργοποίηση δεξιού κλικ
+</script>
+
+ <script>
 document.addEventListener('contextmenu', function(e) {
   e.preventDefault();
 });
+</script>
+<script>
+document.addEventListener('keydown', function(e) {
+  // Αποτροπή Ctrl+C, Ctrl+U, Ctrl+S, Ctrl+A
+  if ((e.ctrlKey || e.metaKey) && ['c','u','s','a'].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+  }
 
-// Απενεργοποίηση συντομεύσεων πληκτρολογίου
+  // Αποτροπή F12 (DevTools)
+  if (e.key === 'F12') {
+    e.preventDefault();
+  }
+});
+</script>
+<script>
+document.addEventListener('copy', function(e) {
+  e.preventDefault();
+  alert("Η αντιγραφή περιεχομένου δεν επιτρέπεται.");
+});
+</script>
+<script>
+// Απαγόρευση δεξιού κλικ
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Απαγόρευση πληκτρολογίου
 document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && ['c','u','s','a'].includes(e.key.toLowerCase())) {
     e.preventDefault();
@@ -152,7 +323,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Απενεργοποίηση ενέργειας αντιγραφής
+// Απαγόρευση αντιγραφής
 document.addEventListener('copy', function(e) {
   e.preventDefault();
   alert("Η αντιγραφή περιεχομένου δεν επιτρέπεται.");
