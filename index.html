@@ -84,6 +84,26 @@ tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
   width: 200px;
   height: auto;
 }
+
+.prediction.visible {
+  filter: blur(0);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 600px) {
+  .prediction {
+    font-size: 1.1rem;
+  }
+  h1 {
+    font-size: 1.4rem;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -186,7 +206,8 @@ tbody tr:nth-child(even) { background: rgba(255,255,255,0.05); }
 <li>Διατηρούμε δικαίωμα επαλήθευσης για αποφυγή καταχρήσεων.</li>
 <li>Η επιστροφή αφορά μόνο το κόστος του προγνωστικού, όχι στοιχηματικές ζημιές.</li>
 </ul>
-<p>Για επιστροφές: <a href="mailto:phonegenius@gmail.com">phonegenius88@gmail.com</a></p>
+<p>Για επιστροφές: <a href="mailto:phonegenius@gmail.com" id="copyEmail">phonegenius88@gmail.com</a></p>
+
 </div>
 </div>
 
@@ -233,6 +254,15 @@ toggleBtn.addEventListener('click',()=>{
   historyContainer.classList.toggle('hidden');
   toggleBtn.textContent = historyContainer.classList.contains('hidden') ? "Δες το ιστορικό" : "Κρύψε το ιστορικό";
 });
+
+document.getElementById("copyEmail").addEventListener("click", (e) => {
+  e.preventDefault();
+  navigator.clipboard.writeText("phonegenius88@gmail.com").then(() => {
+    alert("Το email αντιγράφηκε!");
+    window.location.href = e.target.href;
+  });
+});
+
 </script>
 
 </body>
