@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta name="description" content="Καθημερινά προγνωστικά ποδοσφαίρου με υψηλό ποσοστό επιτυχίας.">
   <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffd700">
 
@@ -131,7 +130,6 @@ body {
 a[href^="mailto"] {
   user-select: text !important;
 }
-
 </style>
 </head>
 <body>
@@ -221,7 +219,8 @@ a[href^="mailto"] {
 </table>
 </div>
 </div>
-  <!-- Σχετικά με εμάς -->
+
+<!-- Σχετικά με εμάς -->
 <div class="card">
   <h2>Σχετικά με εμάς</h2>
   <p>
@@ -275,8 +274,8 @@ a[href^="mailto"] {
     </div>
   </div>
 </div>
-</div>
 
+</div> <!-- κλείσιμο container -->
 
 <!-- Modal -->
 <div id="termsModal" class="modal">
@@ -350,39 +349,15 @@ document.getElementById("copyEmail").addEventListener("click", (e) => {
     window.location.href = e.target.href;
   });
 });
-
 </script>
 
- <script>
+<script>
 document.addEventListener('contextmenu', function(e) {
   e.preventDefault();
 });
 </script>
 <script>
 document.addEventListener('keydown', function(e) {
-  // Αποτροπή Ctrl+C, Ctrl+U, Ctrl+S, Ctrl+A
-  if ((e.ctrlKey || e.metaKey) && ['c','u','s','a'].includes(e.key.toLowerCase())) {
-    e.preventDefault();
-  }
-
-  // Αποτροπή F12 (DevTools)
-  if (e.key === 'F12') {
-    e.preventDefault();
-  }
-});
-</script>
-<script>
-document.addEventListener('copy', function(e) {
-  e.preventDefault();
-  alert("Η αντιγραφή περιεχομένου δεν επιτρέπεται.");
-});
-</script>
-<script>
-// Απαγόρευση δεξιού κλικ
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// Απαγόρευση πληκτρολογίου
-document.addEventListener('keydown', function(e) {
   if ((e.ctrlKey || e.metaKey) && ['c','u','s','a'].includes(e.key.toLowerCase())) {
     e.preventDefault();
   }
@@ -390,8 +365,8 @@ document.addEventListener('keydown', function(e) {
     e.preventDefault();
   }
 });
-
-// Απαγόρευση αντιγραφής
+</script>
+<script>
 document.addEventListener('copy', function(e) {
   e.preventDefault();
   alert("Η αντιγραφή περιεχομένου δεν επιτρέπεται.");
@@ -406,6 +381,5 @@ document.addEventListener('copy', function(e) {
     });
   }
 </script>
-
 </body>
 </html>
