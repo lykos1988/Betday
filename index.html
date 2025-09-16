@@ -130,6 +130,47 @@ body {
 a[href^="mailto"] {
   user-select: text !important;
 }
+  .badges {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.badge {
+  background: #2a2a2a;
+  border-radius: 50%;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffcc00;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+  padding: 10px;
+}
+
+.badge span {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.badge small {
+  font-size: 0.75em;
+  color: #ccc;
+  font-weight: normal;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.8);
+}
+
 </style>
 </head>
 <body>
@@ -253,27 +294,28 @@ a[href^="mailto"] {
   </table>
 </div>
 
-<!-- Badges Αξιοπιστίας -->
+<!-- Badges -->
 <div class="card">
   <h2>Η Αξιοπιστία μας</h2>
-  <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:20px; margin-top:20px;">
-    <div>
-      🏆<br>
-      <strong>Υψηλό Ποσοστό</strong><br>
-      79% Επιτυχία
+  <div class="badges">
+    <div class="badge">
+      <span>🏆</span>
+      Υψηλό Ποσοστό
+      <small>79% Επιτυχία</small>
     </div>
-    <div>
-      💳<br>
-      <strong>Εγγύηση Επιστροφής</strong><br>
-      Αν δεν πιάσει → Refund
+    <div class="badge">
+      <span>💳</span>
+      Εγγύηση
+      <small>Refund αν δεν πιάσει</small>
     </div>
-    <div>
-      ✅<br>
-      <strong>Αξιοπιστία</strong><br>
-      Πάνω από 100+ επιτυχημένα picks
+    <div class="badge">
+      <span>✅</span>
+      Αξιοπιστία
+      <small>100+ επιτυχημένα picks</small>
     </div>
   </div>
 </div>
+
 
 </div> <!-- κλείσιμο container -->
 
