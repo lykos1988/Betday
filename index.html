@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffd700">
+
+<!-- iOS υποστήριξη -->
+<link rel="apple-touch-icon" href="https://i.postimg.cc/J4bBX2nm/Screenshot-2025-09-13-10-44-36-464-com-android-chrome-edit.jpg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
 <style>
 body {
   user-select: none;
@@ -333,6 +340,15 @@ document.addEventListener('copy', function(e) {
   e.preventDefault();
   alert("Η αντιγραφή περιεχομένου δεν επιτρέπεται.");
 });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log("✅ Service Worker registered", reg))
+        .catch(err => console.error("❌ Service Worker error:", err));
+    });
+  }
 </script>
 
 </body>
